@@ -6,6 +6,7 @@
 123 反转之后是 321。
 900 反转之后是 9。
 
+C++
 class Solution {
 public:
     /**
