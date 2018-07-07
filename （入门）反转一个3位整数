@@ -1,0 +1,29 @@
+描述
+反转一个只有3位数的整数。
+你可以假设输入一定是一个只有三位数的整数，这个整数大于等于100，小于1000。
+
+样例
+123 反转之后是 321。
+900 反转之后是 9。
+
+class Solution {
+public:
+    /**
+     * @param number: A 3-digit number.
+     * @return: Reversed number.
+     */
+    int reverseInteger(int number) {
+        // write your code here
+        int i[3];    //用此数组来存每个位上的数字
+        int j = 0;    //保存最后一位
+        int k = 0;    //标志位数，初始化为0，即第一位
+        while(number != 0)
+        {
+            j = number % 10;    //取最后一位
+            number = number / 10;    //得到最后一位后，就去掉
+            i[k++] = j;    //将该位上的数给数组，并且位数加1
+        }
+        k = 0;    //重置k
+        return i[k] * 100 + i[k+1] * 10 + i[k+2]; 
+    }
+};
