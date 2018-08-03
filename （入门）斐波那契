@@ -40,7 +40,7 @@ public:
     }
 };
 
-//2.迭代，AC
+//2.迭代(九章算法)，AC
 class Solution {
 public:
     /**
