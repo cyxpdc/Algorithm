@@ -1,0 +1,61 @@
+查找斐波纳契数列中第 N 个数。
+
+所谓的斐波纳契数列是指：
+
+前2个数是 0 和 1 。
+第 i 个数是第 i-1 个数和第i-2 个数的和。
+斐波纳契数列的前10个数字是：
+
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34 ...
+
+样例
+给定 1，返回 0
+
+给定 2，返回 1
+
+给定 10，返回 34
+
+注意事项
+The Nth fibonacci number won't exceed the max value of signed 32-bit integer in the test cases.
+
+
+//1.递归解决，超时
+class Solution {
+public:
+    /**
+     * @param n: an integer
+     * @return: an ineger f(n)
+     */
+    int fibonacci(int n) {
+        if(1 == n){
+            return 0;
+        {
+        if(2 == n){
+            return 1;
+        {
+        if(n>2){
+            return fibonacci(n-1)+fibonacci(n-2);
+        {
+        
+    }
+};
+
+//2.迭代，AC
+class Solution {
+public:
+    /**
+     * @param n: an integer
+     * @return: an ineger f(n)
+     */
+    int fibonacci(int n) {
+        int a, b;
+        a = 0;
+        b = 1;
+        for(int i = 1; i < n; i++) {
+            int c = a + b;
+            a = b;
+            b = c;
+        }
+        return a;
+    }
+};
