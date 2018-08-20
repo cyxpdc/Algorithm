@@ -5,6 +5,43 @@
 11! = 39916800，因此应该返回 2
 挑战
 O(logN)的时间复杂度
+c++(样例成功，ac失败)：
+class Solution {
+public:
+    /*
+     * @param n: A long integer
+     * @return: An integer, denote the number of trailing zeros in n!
+     */
+    long long trailingZeros(long long n) {
+        // write your code here, try to do it without arithmetic operators.
+        //只需要判断n能凑出几对2*5的组合
+        //如11，有2*5，4*10，所以有两个0
+        long long count = 0;
+        long long j = 0;
+        long long arr[n];
+        for(long long i = 1; i <= n; ++i){
+            arr[i-1] = i;
+        }
+        //遍历每个数
+        for(long long i = 1; i <= n; ++i){
+            if(0 == i % 2){
+                ////如果是2的倍数，则判断是否与之有相匹配的数字
+                for(;j < n;j++ ){
+                    if((i * arr[j]) % 10 == 0 && i % 10 != 0){
+                        ++count;
+                        //置为1，等于置空它，只要不为0就好，为0会使if一直为真
+                        arr[j] = 1;   
+                        ++j;
+                    }
+                    if(i % 10 == 0){
+                        ++count;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
 java:(失败)
 public class Solution {
     /*
@@ -15,7 +52,8 @@ public class Solution {
         //只需要判断n能凑出几对2*5的组合
         //如11，有2*5，4*10，所以有两个0
         long count = 0;
-        long arr[] = new long[n];
+        long j = 0;
+        long arr[n];
         for(long i = 1; i <= n; ++i){
             arr[i-1] = i;
         }
@@ -23,10 +61,12 @@ public class Solution {
         for(long i = 1; i <= n; ++i){
             if(0 == i % 2){
                 ////如果是2的倍数，则判断是否与之有相匹配的数字
-                for(long j = 0;j < n;j++ ){
-                    if(0 == (i * arr[j]) % 2){
+                for(;j < n;j++ ){
+                    if(0 == (i * arr[j]) % 10){
                         ++count;
-                        arr[j] = 0;
+                        //置为1，等于置空它，只要不为0就好，为0会使if一直为真
+                        arr[j] = 1;   
+                        ++j;
                     }
                 }
             }
