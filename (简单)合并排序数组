@@ -1,0 +1,42 @@
+6. 合并排序数组 II
+合并两个排序的整数数组A和B变成一个新的数组。
+
+样例
+给出A=[1,2,3,4]，B=[2,4,5,6]，返回 [1,2,2,3,4,4,5,6]
+
+挑战
+你能否优化你的算法，如果其中一个数组很大而另一个数组很小？
+java:(成功)
+class Solution {
+    /**
+     * @param A and B: sorted integer array A and B.
+     * @return: A new sorted integer array
+     */
+    public int[] mergeSortedArray(int[] A, int[] B) {
+        // Write your code here
+        int[] C = new int[A.length + B.length];
+        int a = 0, b = 0, c = 0;
+        //因不知道具体次数，所以用while
+        while(a != A.length && b != B.length) {
+            if(A[a] > B[b]){
+                C[c] = B[b++];
+            }
+            else {
+                C[c] = A[a++];
+            }
+            c++;
+        }
+        //判断A或者B是否有剩下的数
+        if(a != A.length){
+            while(a != A.length){
+                C[c++] = A[a++];
+            }
+        }
+        else {
+            while(b != B.length){
+                C[c++] = B[b++];
+            }
+        }
+        return C;
+    }
+}
