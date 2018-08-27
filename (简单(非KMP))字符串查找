@@ -1,0 +1,63 @@
+字符串查找
+对于一个给定的 source 字符串和一个 target 字符串，你应该在 source 字符串中找出 target 字符串出现的第一个位置(从0开始)。如果不存在，则返回 -1。
+
+样例
+如果 source = "source" 和 target = "target"，返回 -1。
+如果 source = "abcdabcdefg" 和 target = "bcd"，返回 1。
+
+挑战
+O(n2)的算法是可以接受的。如果你能用O(n)的算法做出来那更加好。（提示：KMP）
+
+说明
+在面试中我是否需要实现KMP算法？
+
+不需要，当这种问题出现在面试中时，面试官很可能只是想要测试一下你的基础应用能力。当然你需要先跟面试官确认清楚要怎么实现这个题。
+java:(ac)
+public class Solution {
+    /**
+     * @param source: 
+     * @param target: 
+     * @return: return the index
+     */
+    public int strStr(String source, String target) {
+        // Write your code here
+        //如果匹配，子串和母串同时移动.
+        //如果不匹配，分两种情况
+        //如果是因为子串首字母都不匹配，那么子串返回首位置，母串移动到下一位，
+        //但是如果匹配了至少一个后才不匹配，则子串返回首位置，母串不动。否则例如"abcabcde""abcde"之类的会出错
+       if (source == null || target == null || source.length()< target.length()) {
+            return -1;
+        }
+        if (target.length() == 0) {
+            return 0;
+        }
+        int i = 0;  //source
+        int j = 0;  //target
+        while (true) {
+            //遍历字符
+            if (source.charAt(i) == target.charAt(j)) {
+                //相同则都后移一位
+                j++;
+                i++;
+            } else {
+                //子串首字母都不匹配，母串后移一位
+                if(j == 0){
+                    i++;
+                }
+                //如果匹配了至少一个后才不匹配，此时母串则不移动
+                //子串从头开始
+                j = 0;
+                
+            }
+            //如果子串全部匹配，输出结果
+            if (j == target.length()) {
+                return i - j;
+            }
+            //如果母串已经到尾，结束循环，不能直接return -1;会报错
+            if (i == source.length()) {
+                break;
+            }
+        }
+        return -1;
+    }
+}
