@@ -1,1 +1,1 @@
-# LintCode
+# Algorithm
