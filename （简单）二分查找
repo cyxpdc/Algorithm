@@ -1,0 +1,84 @@
+ 二分查找
+给定一个排序的整数数组（升序）和一个要查找的整数target，用O(logn)的时间查找到target第一次出现的下标（从0开始），如果target不存在于数组中，返回-1。
+
+样例
+在数组 [1, 2, 3, 3, 4, 5, 10] 中二分查找3，返回2。
+
+挑战
+如果数组中的整数个数超过了2^32，你的算法是否会出错？
+
+java:(成功)
+public class Solution {
+    /**
+     * @param nums: The integer array.
+     * @param target: Target to find.
+     * @return: The first position of target. Position starts from 0.
+     */
+    public int binarySearch(int[] nums, int target) {
+        // write your code here
+        //分以下两种情况：
+        //如果是7/2这种，则mid索引对应的位置刚好是中间数字nums[mid]
+        //如果是8/2，6/2，这种，则对应nums[mids],nums[mids-1]
+        int n = nums.length;
+        int mid = n / 2;
+        int temp = 0;
+        if(n % 2 != 0){ //类似7/3这种
+            if(nums[mid] < target){ //目标出现在右边
+                for(int i = mid + 1;i < n;++i){
+                    if(nums[i] == target){  //找到后，说明就是第一个出现的，直接返回
+                        return i;
+                    }
+                }
+            }else if(nums[mid] >= target){   //目标出现在左边或中间
+                for(int i = mid - 1;i >= 0;--i){
+                    if(nums[i] == target){
+                        temp = i;   //需要找到最左边一个与target相同的数
+                    }
+                }
+                //循环判断结束后，返回记录的索引
+                return temp;
+            }
+        }else if(n % 2 == 0){   //类似8/2，6/2这种
+            //判断nums[mids],nums[mids-1]与target的大小
+            //如果nums[mids]小于target，往右
+            //如果nums[mids-1]大于target，往左
+            //如果nums[mids]，nums[mids-1]等于target，循环往左直到索引为0，找到第一个出现的.代码类似2
+            if(nums[mid] < target){
+                for(int i = mid + 1;i < n;++i){
+                    if(nums[i] == target){  //找到后，说明就是第一个出现的，直接返回
+                        return i;
+                    }
+                }
+            }else if(nums[mid-1] > target){
+                temp = -1;  //先令temp为-1，以防找不到，才不会返回0
+                for(int i = mid - 2;i >= 0;--i){
+                    if(nums[i] == target){
+                        temp = i;   //需要找到最左边一个与target相同的数
+                    }
+                }
+                //循环判断结束后，返回记录的索引
+                return temp;
+            }else if(nums[mid] == target){
+                temp = mid;
+                for(int i = mid - 1;i >= 0;--i){
+                    if(nums[i] == target){
+                        temp = i;   //需要找到最左边一个与target相同的数
+                    }
+                }
+                //循环判断结束后，返回记录的索引
+                return temp;
+            }else if(nums[mid-1] == target){
+                temp = mid - 1; //先令temp为mid-1，以防mid-1就是最左边的一个，才不会返回0
+                for(int i = mid - 2;i >= 0;--i){
+                    if(nums[i] == target){
+                        temp = i;   //需要找到最左边一个与target相同的数
+                    }
+                }
+                //循环判断结束后，返回记录的索引
+                return temp;
+            }
+        }
+        //找不到，返回-1
+        return -1;
+    }
+}
