@@ -1,0 +1,88 @@
+平面列表
+给定一个列表，该列表中的每个要素要么是个列表，要么是整数。将其变成一个只包含整数的简单列表。
+
+样例
+给定 [1,2,[1,2]]，返回 [1,2,1,2]。
+
+给定 [4,[3,[2,[1]]]]，返回 [4,3,2,1]。
+
+挑战
+请用非递归方法尝试解答这道题。
+
+注意事项
+如果给定的列表中的要素本身也是一个列表，那么它也可以包含列表。
+
+java:(成功，递归)
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * public interface NestedInteger {
+ *
+ *     // @return true if this NestedInteger holds a single integer,
+ *     // rather than a nested list.
+ *     public boolean isInteger();  //是不是整数
+ *
+ *     // @return the single integer that this NestedInteger holds,
+ *     // if it holds a single integer
+ *     // Return null if this NestedInteger holds a nested list
+ *     public Integer getInteger(); //返回这个整数
+ *
+ *     // @return the nested list that this NestedInteger holds,
+ *     // if it holds a nested list
+ *     // Return null if this NestedInteger holds a single integer
+ *     public List<NestedInteger> getList();    //返回NestedInteger类的一个对象
+ * }
+ */
+public class Solution 
+{
+    // @param nestedList a list of NestedInteger
+    // @return a list of integer
+    public List<Integer> flatten(List<NestedInteger> nestedList) 
+    {
+        //根据接口给出的三个办法(如上)，遍历nestedList，依次判断是不是整数，
+        //若是的话，放到result中。若不是，递归调用这个函数。
+        // Write your code here
+        List<Integer> result = new ArrayList<Integer>();
+        for(NestedInteger ni : nestedList)
+        {
+            if(ni.isInteger() == true)
+            {
+                result.add(ni.getInteger());
+            }
+            else
+            {
+                result.addAll(flatten(ni.getList())); //addAll:将传入的List(ni)中的所有元素加入到当前List(result)中
+            }
+        }
+        return result;
+    }
+}
+
+java:(成功，非递归)
+public class Solution {
+
+    // @param nestedList a list of NestedInteger
+    // @return a list of integer
+    public List<Integer> flatten(List<NestedInteger> nestedList) {
+        boolean flat = true;
+        while (flat) {
+            flat = false;
+            List<NestedInteger> newNi = new ArrayList<>();
+            for (NestedInteger ni : nestedList) {
+                if (ni.isInteger()) {
+                    newNi.add(ni);
+                } else {
+                    newNi.addAll(ni.getList());
+                    flat = true;
+                }
+            }
+            //逐步赋值，模仿递归
+            nestedList = newNi;
+        }
+        List<Integer> result = new ArrayList<>();
+        for (NestedInteger ni : nestedList) {
+            result.add(ni.getInteger());
+        }
+        return result;
+    }
+}
