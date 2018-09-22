@@ -1,0 +1,252 @@
+28. 搜索二维矩阵
+写出一个高效的算法来搜索 m × n矩阵中的值。
+
+这个矩阵具有以下特性：
+
+每行中的整数从左到右是排序的。
+每行的第一个数大于上一行的最后一个整数。
+样例
+考虑下列矩阵：
+
+[
+  [1, 3, 5, 7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+给出 target = 3，返回 true
+
+挑战
+O(log(n) + log(m)) 时间复杂度
+
+java(自己写的，AC，略显复杂，下面有别人的更好的)
+可以参考我的思路来写
+public class Solution {
+    /**
+     * @param matrix: matrix, a list of lists of integers
+     * @param target: An integer
+     * @return: a boolean, indicate whether matrix contains target
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        //对一维的中间层(lenOne/2+1)的最后一个进行判断
+        //a.如果target大于这个数：
+        //1.如果是最后一层，抛出异常，代表找不到
+        //2.如果不是最后一层，就移到下一层的最后一个
+        //3.如果比较了之后还是target更大，则继续判断（记得判断1）；如果target小，就遍历这一层的其他数，有相同的，则得到答案true，如果没有，抛出异常，代表找不到
+        //b.如果target小于这个数:
+        //1.如果是第一层，则遍历此层，有相同的，则得到答案，如果没有，返回false
+        //2.如果不是第一层，就移到上一层的最后一个
+        //3.如果比较了之后还是target更小，则继续判断（记得判断1）；如果target大，就遍历下一层的其他数，有相同的，则得到答案true，如果没有，返回false
+        //c.如果target等于这个数，直接返回true
+        // write your code here
+        //第一维的长度，样例为3
+        int lenOne = matrix.length;
+        if(lenOne == 0)
+        {
+            return false;
+        }
+        //第二维的长度，样例为4
+        int lenTwo = matrix[0].length;
+        if(lenTwo == 0)
+        {
+            return false;
+        }
+        //一维的中间层
+        int mid = lenOne/2 + 1;
+        boolean flag = false;
+        if(target == matrix[lenOne-1][lenTwo-1])
+        {
+            return true;
+        }
+        //a.如果target大于这个数：
+        while(target > matrix[mid-1][lenTwo-1])
+        {
+            //1.如果是最后一层，返回false
+            if(mid >= (lenOne-1))
+            {
+                return false;
+            }
+            //2.如果不是最后一层，就移到下一层的最后一个
+            //3.如果比较了之后还是target更大，则继续下移判断（记得判断1）；
+            else
+            {
+                ++mid;
+                if(target < matrix[mid-1][lenTwo-1])
+                {
+                    //如果target小，就遍历这一层的其他数，有相同的，则得到答案true，如果没有，返回false
+                    for(int i = 0;i < lenTwo-2;++i)
+                    {
+                        if(target == matrix[mid-1][i])
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        //重新赋值计算
+        mid = lenOne/2 + 1;
+        //b.如果target小于这个数:
+        while(target < matrix[mid-1][lenTwo-1])
+        {   
+            //1.如果是第一层，则遍历此层其他数，有相同的，则得到答案，如果没有，返回false
+            if(mid <= 0 )
+            {
+                for(int i = 0;i < lenTwo-2;++i)
+                {
+                    if(target == matrix[mid][i])
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            //2.如果不是第一层，就移到上一层的最后一个
+            else
+            {
+                 //3.如果比较了之后还是target更小，则继续判断（记得判断1）；如果target大，就遍历下一层的其他数，有相同
+                 //的，则得到答案true，如果没有，返回false
+                --mid;
+                if(mid <= 0 )
+                {
+                    for(int i = 0;i < lenTwo-2;++i)
+                    {
+                        if(target == matrix[mid][i])
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                if(target < matrix[mid-1][lenTwo-1])
+                {
+                    continue;
+                }
+                else if(target > matrix[mid-1][lenTwo-1])
+                {
+                    for(int i = 0;i < lenTwo-2;i++)
+                    {
+                        if(target == matrix[mid][i])
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if(target == matrix[mid-1][lenTwo-1])
+                {
+                    return true;
+                }
+            }
+        }
+        //c.如果target等于这个数，直接返回true
+        //重新赋值计算
+        mid = lenOne/2 + 1;
+        if(target == matrix[mid-1][lenTwo-1])
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
+/**
+* 本参考程序来自九章算法，由 @九章算法 提供。版权所有，转发请注明出处。
+* - 九章算法致力于帮助更多中国人找到好的工作，教师团队均来自硅谷和国内的一线大公司在职工程师。
+* - 现有的面试培训课程包括：九章算法班，系统设计班，算法强化班，Java入门与基础算法班，Android 项目实战班，
+* - Big Data 项目实战班，算法面试高频题班, 动态规划专题班
+* - 更多详情请见官方网站：http://www.jiuzhang.com/?source=code
+*/ 
+//这个很慢
+// Binary Search Twice
+public class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return false;
+        }
+        
+        int row = matrix.length;
+        int column = matrix[0].length;
+        
+        // find the row index, the last number <= target 
+        int start = 0, end = row - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (matrix[mid][0] == target) {
+                return true;
+            } else if (matrix[mid][0] < target) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (matrix[end][0] <= target) {
+            row = end;
+        } else if (matrix[start][0] <= target) {
+            row = start;
+        } else {
+            return false;
+        }
+        
+        // find the column index, the number equal to target
+        start = 0;
+        end = column - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (matrix[row][mid] == target) {
+                return true;
+            } else if (matrix[row][mid] < target) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (matrix[row][start] == target) {
+            return true;
+        } else if (matrix[row][end] == target) {
+            return true;
+        }
+        return false;
+    }
+}
+//这个很快！！！
+// Binary Search Once
+public class Solution {
+    /**
+     * @param matrix, a list of lists of integers
+     * @param target, an integer
+     * @return a boolean, indicate whether matrix contains target
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // write your code here
+        if(matrix == null || matrix.length == 0){
+            return false;
+        }
+        
+        if(matrix[0] == null || matrix[0].length == 0){
+            return false;
+        }
+        
+        int row = matrix.length;
+        int column = matrix[0].length;
+        
+        int start = 0, end = row * column - 1;
+        while(start <= end){
+            int mid = start + (end - start) / 2;
+            int number = matrix[mid / column][mid % column];
+            if(number == target){
+                return true;
+            }else if(number > target){
+                end = mid - 1;
+            }else{
+                start = mid + 1;
+            }
+        }
+        
+        return false;
+        
+    }
+}
