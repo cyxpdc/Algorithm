@@ -1,0 +1,90 @@
+恢复旋转排序数组
+给定一个旋转排序数组，在原地恢复其排序。
+
+样例
+[4, 5, 1, 2, 3] -> [1, 2, 3, 4, 5]
+
+挑战
+使用O(1)的额外空间和O(n)时间复杂度
+
+说明
+什么是旋转数组？
+
+比如，原始数组为[1,2,3,4], 则其旋转数组可以是[1,2,3,4], [2,3,4,1], [3,4,1,2], [4,1,2,3]
+
+Java:AC失败。。。
+public class Solution {
+    /**
+     * @param nums: An integer array
+     * @return: nothing
+     */
+    //找到1后，1后面的数字依次与其对应位置交换位置即可
+    public void recoverRotatedSortedArray(List<Integer> nums) {
+        int n = nums.size();
+        for(int i = 0;i < n;i++){
+            //特殊情况
+            if(i == 0 && nums.get(i) == 1){
+                return ;
+            }
+            //找到1
+            if(nums.get(i) == 1){
+                //交换
+                int oldValue = nums.get(0);
+                nums.set(0,nums.get(i));
+                nums.set(i,oldValue);
+                //从第二个位置开始交换1后面的数字
+                int index = 1;
+                i++;
+                while(i <= n){
+                    i = i % n;
+                    oldValue = nums.get(index);
+                    nums.set(index,nums.get(i));
+                    nums.set(i,oldValue);
+                    i++;
+                    index++;
+                }
+                if(i % 2 != 0){
+                    oldValue = nums.get(index);
+                    nums.set(index,nums.get(i-1));
+                    nums.set(i-1,oldValue);    
+                }
+                
+                return ;
+            }
+        }
+    }
+}
+
+Java:AC
+参考博客：https://blog.csdn.net/github_34248245/article/details/50900004
+代码：九章算法
+public class Solution {
+    /**
+     * @param nums: The rotated sorted array
+     * @return: The recovered sorted array
+     */
+    //不停地交换start，end直到相遇
+    private void reverse(List<Integer> nums, int start, int end) {
+        for (int i = start, j = end; i < j; i++, j--) {
+            int temp = nums.get(i);
+            nums.set(i, nums.get(j));
+            nums.set(j, temp);
+        }
+    }
+    //三步翻转法：以{4,5,6,7,1,2,3}为例
+    //1. 先找到1的位置.然后翻转{4,5,6,7}得到{7,6,5,4}
+    //2. 翻转{1,2,3}得到{3,2,1}
+    //3. 此时数组为：{7,6,5,4,3,2,1}, 将其翻转即得{1,2,3,4,5,6,7}
+    public void recoverRotatedSortedArray(List<Integer> nums) {
+        int n = nums.size();
+        for (int index = 0; index < n - 1; index++) {
+            //如果当前索引的值大于其后一位索引的值，就是找到旋转点了
+            if (nums.get(index) > nums.get(index + 1)) {
+                reverse(nums, 0, index);
+                reverse(nums, index + 1, nums.size() - 1);
+                reverse(nums, 0, nums.size() - 1);
+                return;
+            }
+        }
+    }
+}
