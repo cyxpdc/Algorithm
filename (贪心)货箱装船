@@ -1,0 +1,85 @@
+货箱装载问题代码:
+
+//货箱
+public class Container implements Comparable<Container>{
+	
+	private int id;//货箱编号
+	private int weight;//货箱重量
+	private int state;//货箱状态，1为上船，0为没上船
+	
+	public Container(int id, int weight, int state) {
+		this.id = id;
+		this.weight = weight;
+		this.state = state;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getWeight() {
+		return weight;
+	}
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
+	@Override
+	public int compareTo(Container o) {
+		return this.weight - o.weight;
+	}
+}
+....
+//货箱装载问题测试
+public class ContainerLoadTest {
+	
+	public static void main(String[] args) {
+		//定义船的最大容量
+		int capacity = 500;
+		//获得货箱集合
+		List<Container> list = getContainerArray();
+		//测试是否成功
+		//System.out.println(list.get(1).getId() +":"+list.get(1).getWeight());
+		//排序
+		Collections.sort(list);
+		//测试是否成功
+		for(int i = 0;i < 8;i++){
+			System.out.println(list.get(i).getId() +":"+list.get(i).getWeight());
+		}
+		//货箱数量
+		int n = list.size();
+		//按重量顺序选择货箱
+		Container c = list.get(0);
+		for(int i = 0;i < n && c.getWeight() <= capacity;i++){
+			c = list.get(i);
+			c.setState(1);//代表上船
+			capacity -= c.getWeight();
+		}
+		for(Container c1 : list){
+			System.out.println(c1.getId()+":"+c1.getState());
+		}
+	}
+	//获得货箱集合
+	private static List<Container> getContainerArray(){
+		Random rnd = new Random();//用来给货箱重量赋值
+		List<Container> list = new ArrayList<>();
+		for(int i = 0;i < 8;i++){
+			int temp = rnd.nextInt(200);
+			while(temp == 0){
+				//如果货箱重量等于0，重新赋值
+				temp = rnd.nextInt(200);
+			}
+			list.add(new Container(i+1,temp,0));
+			//测试是否成功
+			//System.out.println(list.get(i).getId() +":"+list.get(i).getWeight());
+		}
+		return list;
+	}
+}
+
