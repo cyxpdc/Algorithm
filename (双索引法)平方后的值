@@ -1,0 +1,84 @@
+给定一个有序整数数组，数组中的数可以是正数、负数、零，请实现一个方法，求出这个数组所有数的平方值中有多少种不同的取值。
+
+样例：
+nums = {-1,1,-11,1},
+则返回1。取值为:1
+nums = {-1,0,1,4,9}
+则返回4。取值为:1、0、16、81
+
+挑战:
+使得时间复杂度为：O(N)、空间复杂度O(1)。
+
+1.
+JAVA:(AC)
+public static int squareValue1(List<Integer> list){
+		int res = 0;//结果
+		//特殊情况
+		if(list == null || list.size() == 0){
+			return res;
+		}
+		//利用HashSet的去重性
+		HashSet<Integer> set = new HashSet<>();
+		for(Integer i : list){
+			set.add(Math.abs(i));
+		}
+		res = set.size();
+		return res;
+	}
+  
+  2.(最优)
+  思路:(双索引法、双指针法，利用有序条件)
+  1.使用两个索引维护list，一开始的时候，pre索引为第一个元素，last为最后一个元素,preNum为pre索引的值，lastNum为last索引的值
+  2.1 如果preNum大于lastNum,则result加1;
+      此时因为list有序，所以preNum的绝对值是此时list剩余元素中最大的数，所以pre往后移动，再进行去重操作。
+  2.2 如果preNum小于lastNum,则result加1;
+      此时因为list有序，所以lastNum的绝对值是此时list剩余元素中最大的数，所以last往前移动，再进行去重操作。
+  2.3 如果preNum等于lastNum,则result加1;
+      此时因为list有序，所以lastNum和preNum的绝对值是此时list剩余元素中最大的数;
+      所以pre往前移动，last往后移动，再进行去重操作。
+  
+  JAVA:(AC)
+  public static int squareValue2(List<Integer> list){
+		int result = 0;//结果
+		//特殊情况
+		if(list == null || list.size() == 0){
+			return result;
+		}
+		int pre = 0;//前索引
+		int last = list.size()-1;//后索引
+		while(pre <= last){
+			int preNum = Math.abs(list.get(pre));
+			int lastNum = Math.abs(list.get(last));
+			if(preNum > lastNum){
+				result += 1;
+				pre++;
+				//去掉相同的数
+				while(pre <= last && Math.abs(list.get(pre))==preNum){
+					pre++;
+				}
+			}
+			else if(preNum < lastNum){
+				result += 1;
+				last--;
+				//去掉相同的数
+				while(pre <= last && Math.abs(list.get(last))==lastNum){
+					last--;
+				}
+			}
+			else{
+				result += 1;
+				pre++;
+				last--;
+				//去掉相同的数
+				while(pre <= last && Math.abs(list.get(pre))==preNum){
+					pre++;
+				}
+				while(pre <= last && Math.abs(list.get(last))==lastNum){
+					last--;
+				}
+			}
+		}
+		return result;
+	}
+  
+  题目来源:菜鸟名企梦
