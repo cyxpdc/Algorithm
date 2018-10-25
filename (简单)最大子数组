@@ -1,0 +1,38 @@
+最大子数组
+给定一个整数数组，找到一个具有最大和的子数组，返回其最大和。
+
+样例
+给出数组[−2,2,−3,4,−1,2,1,−5,3]，符合要求的子数组为[4,−1,2,1]，其最大和为6
+
+挑战
+要求时间复杂度为O(n)
+
+注意事项
+子数组最少包含一个数
+
+Java:(AC) 九章算法
+public class Solution {
+    /**
+     * @param nums: A list of integers
+     * @return: A integer indicate the sum of max subarray
+     */
+    public int maxSubArray(int[] nums) {
+        if(nums == null || nums.length == 0){
+            return 0;
+        }
+        int max = Integer.MIN_VALUE;//因为要求最大值，所以先赋一个很小的值
+        int sum = 0;//子数组的和
+        int n = nums.length;
+        for(int i = 0;i < n;i++){
+            sum += nums[i];
+            max = Math.max(max,sum);//一直求最大
+            //加上nums[i]后小于0，说明
+            //1.nums[i]小于0
+            //2.在i前的所有值加起来都没有这个nums[i]的绝对值大
+            //3.如果不改变sum，下一步循环加上num[i+1]后，sum会比nums[i+1]还小
+            //所以需要重置sum的值,即重新计算子数组
+            sum = Math.max(sum,0);
+        }
+        return max;
+    }
+}
