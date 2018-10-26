@@ -1,0 +1,41 @@
+Majority Element
+给定一个整型数组，找出主元素，它在数组中的出现次数严格大于数组元素个数的二分之一。
+
+样例
+给出数组[1,1,1,1,2,2,2]，返回 1
+
+挑战
+要求时间复杂度为O(n)，空间复杂度为O(1)
+
+注意事项
+You may assume that the array is non-empty and the majority number always exist in the array.
+
+Java:(AC)
+public class Solution {
+    /*
+     * @param nums: a list of integers
+     * @return: find a  majority number
+     */
+    public int majorityNumber(List<Integer> nums) {
+        // write your code here
+        int n = nums.size();
+        int num = nums.get(0);//先用第一个数代表第一个
+        int count = 1;//计数器,因为第一个赋值给了num，所以初始为1
+        for(int i = 1;i < n;i++){
+            //如果等于，则计数器加1
+            if(nums.get(i) == num){
+                count++;
+                continue;
+            }
+            //如果不等于了，就判断计数器的大小
+            //如果大于数组的一半，就可以返回num了
+            if(count > n/2){
+                return num;
+            }
+            //如果不等于,重新以下一个i开始计算
+            count = 0;
+            num = nums.get(i);
+        }
+        return num;
+    }
+}
