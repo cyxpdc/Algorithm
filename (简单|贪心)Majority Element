@@ -22,7 +22,7 @@ public class Solution {
         int num = nums.get(0);//先用第一个数代表第一个
         int count = 1;//计数器,因为第一个赋值给了num，所以初始为1
         for(int i = 1;i < n;i++){
-            //如果等于，则计数器加1
+            //如果等于，则计数器加1(贪心)
             if(nums.get(i) == num){
                 count++;
                 continue;
