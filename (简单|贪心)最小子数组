@@ -1,0 +1,26 @@
+最小子数组
+给定一个整数数组，找到一个具有最小和的子数组。返回其最小和。
+
+样例
+给出数组[1, -1, -2, 1]，返回 -3
+
+注意事项
+子数组最少包含一个数字
+
+思路同:最大子数组
+public class Solution {
+    /*
+     * @param nums: a list of integers
+     * @return: A integer indicate the sum of minimum subarray
+     */
+    public int minSubArray(List<Integer> nums) {
+        int min = Integer.MAX_VALUE;
+        int sum = 0;
+        for(int i = 0;i < nums.size();i++){
+            sum += nums.get(i);
+            min = Math.min(min,sum);
+            sum = Math.min(sum,0);
+        }
+        return min;
+    }
+}
