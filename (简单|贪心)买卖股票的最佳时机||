@@ -26,6 +26,8 @@ class Solution {
     public int maxProfit(int[] prices) {
         int n = prices.length;
         int profit = 0;//收益
+        //总是做出在当前看来是最好的选择，不从整体最优上加以考虑
+        //也就是说，只关心当前最优解----https://blog.csdn.net/newbie_lb/article/details/80007386
         for (int i = 1; i < n; i++) {
             if (prices[i] > prices[i - 1])
                 profit += prices[i] - prices[i - 1];
