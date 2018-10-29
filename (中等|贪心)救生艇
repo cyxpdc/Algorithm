@@ -102,7 +102,6 @@ class Solution {
             j--;
             num++;
         }
-
         return num;
     }
 }
