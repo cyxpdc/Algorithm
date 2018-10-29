@@ -1,0 +1,108 @@
+第 i 个人的体重为 people[i]，每艘船可以承载的最大重量为 limit。
+每艘船最多可同时载两人，但条件是这些人的重量之和最多为 limit。
+返回载到每一个人所需的最小船数。(保证每个人都能被船载)。
+
+示例 1：
+输入：people = [1,2], limit = 3
+输出：1
+解释：1 艘船载 (1, 2)
+
+示例 2：
+输入：people = [3,2,2,1], limit = 3
+输出：3
+解释：3 艘船分别载 (1, 2), (2) 和 (3)
+
+示例 3：
+输入：people = [3,5,3,4], limit = 5
+输出：4
+解释：4 艘船分别载 (3), (3), (4), (5)
+
+提示：
+1 <= people.length <= 50000
+1 <= people[i] <= limit <= 30000
+
+Java:(AC失败)
+贪心策略:相邻的两个数比较,如果小于limit，则船数加1，循环跳过这两个数。
+
+如果没排序，则 
+输入 
+[3,8,7,1,4]
+9
+输出
+4
+预期结果为
+3
+
+如果排序，则
+输入
+[5,1,4,2]
+6
+输出
+3
+预期结果为
+2
+class Solution {
+    public int numRescueBoats(int[] people, int limit) {
+        int n = people.length;
+        int num = 0;
+        //先对数组排序
+        sort(people);
+        for(int i = 0;i < n;i++){
+            //如果刚好等于limit，直接num+1
+            if(people[i] == limit){
+                num++;
+                continue;
+            }
+            //如果i不到最后一个位置，且i和i+1位置上的数加起来小于等于limit，则可以两人同乘一船
+            if(i != n-1 && people[i] + people[i+1] <= limit){
+                num++;
+                //因为i+1也上船了，所以i往后移一位
+                i++;
+                continue;
+            }
+            num++;
+        }
+        return num;
+    }
+    
+    public void sort(int[] arr){
+        for(int i=0;i<arr.length;i++) {
+            int temp = i;
+            for(int j=i;j<arr.length;j++) {
+                if(arr[j] < arr[temp]) {
+                    temp = j;
+                }
+            }
+            int temp1 = arr[i];
+            arr[i] = arr[temp];
+            arr[temp] = temp1;
+        }
+    }
+}
+
+Java:(AC)
+leetcode官方题解:双指针法
+思路:
+如果最重的人可以与最轻的人共用一艘船，那么就这样安排。否则，最重的人无法与任何人配对，那么他们将自己独自乘一艘船;
+所以用两个指针，一个指向最轻的人，一个指向最重的人，问题迎刃而解。
+
+class Solution {
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        //i为轻指针，j为重指针
+        int i = 0, j = people.length - 1;
+        int num = 0;
+
+        while (i <= j) {
+            //如果最重的人可以与最轻的人共用一艘船，则轻重指针都移动
+            //如果不行，那就只移动重指针(贪心:最重的那个上船)
+            //无论哪种情况，num都加1(要么载轻重，要么载重)
+            if (people[i] + people[j] <= limit)
+                i++;
+            j--;
+            num++;
+        }
+
+        return num;
+    }
+}
