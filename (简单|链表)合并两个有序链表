@@ -1,0 +1,63 @@
+将两个有序链表合并为一个新的有序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+
+示例：
+输入：1->2->4, 1->3->4
+输出：1->1->2->3->4->4
+
+思路:用一个新结点表示新链表的头结点，依次判断两个链表的值，逐个加入新链表即可，注意一些判断，详见代码注释。
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+ Java:(AC)
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        //特殊情况
+        if(l1 == null){
+            return l2;
+        }
+        if(l2 == null){
+            return l1;
+        }
+        //新链表的头结点,为两个旧链表的头结点中的最小值
+        ListNode head = (l1.val >= l2.val)?l2 : l1;
+        //当前结点，用来连接新链表
+        ListNode currentNode = head;
+        //因为已经赋值了其中一个旧链表的头结点，所以需要往后移
+        if(l1 == head){
+            l1 = l1.next;
+        }
+        else{
+            l2 = l2.next;
+        }
+        //循环遍历两个旧链表
+        for(;l1 != null || l2 != null;currentNode = currentNode.next){
+            //如果有其中一个旧链表的尾结点为null了,代表此旧链表已经连接完毕
+            //那么将另一个链表的后续结点全部接到currentNode后面即可
+            if(l1 == null){
+                currentNode.next = l2;
+                break;
+            }
+            if(l2 == null){
+                currentNode.next = l1;
+                break;
+            }
+            //核心判断：根据值判断currentNode的下一个结点
+            if(l1.val < l2.val){
+                currentNode.next = l1;
+                l1 = l1.next;
+            }
+            else{
+                currentNode.next = l2;
+                l2 = l2.next;
+            }
+        }
+        //返回新链表的头结点
+        return head;
+    }
+}
