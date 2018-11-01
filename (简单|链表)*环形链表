@@ -1,0 +1,72 @@
+给定一个链表，判断链表中是否有环。
+
+进阶：
+你能否不使用额外空间解决此题？
+
+思路：
+
+常规：
+环形链表代表着某个节点会通过一个环重新走到自身上面，所以不断遍历每个节点，判断是否出现了两次，如果是，那么就是环形链表;可使用HashSet的去重性
+用到了set这个额外的空间
+进阶：
+双指针法
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+ Java:(AC,HashSet法)
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<ListNode>();
+        ListNode temp = head;
+        while(temp != null){
+            if(!(set.add(temp))){
+                return true;
+            }
+            temp = temp.next;
+        }
+        return false;
+    }
+}
+Java:(AC,双指针法)
+思路:
+用两个指针，一个快一个慢，想象一个圆形跑道，只要满足一定的规则，跑得快的一定会跟跑得慢的相遇，而如果相遇了，就说明是圆形跑道，即环形链表。
+规则:一次循环中fast比slow快几个节点都可以,但是需要保证初始与迭代的步数一致，如下注释的两步
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        //初始
+        ListNode fast = head.next;
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            //迭代
+            fast = fast.next.next;
+        }
+        return true;
+    }
+}
