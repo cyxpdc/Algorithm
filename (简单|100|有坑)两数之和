@@ -52,6 +52,7 @@ public int[] twoSum(int[] nums, int target) {
         //6
         //输出：[0,0]
         //预期：[1,2]
+        //而放在这里，因为加法满足交换律:即2+4=4+2,所以不会发生错过某个元素的情况
         map.put(nums[i], i);
     }
     throw new IllegalArgumentException("No two sum solution");
