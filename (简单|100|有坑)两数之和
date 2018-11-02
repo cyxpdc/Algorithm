@@ -1,0 +1,58 @@
+给定一个整数数组和一个目标值，找出数组中和为目标值的两个数。
+你可以假设每个输入只对应一种答案，且同样的元素不能被重复利用。
+
+示例:
+给定 nums = [2, 7, 11, 15], target = 9
+因为 nums[0] + nums[1] = 2 + 7 = 9
+所以返回 [0, 1]
+
+1.Java:(AC)
+思路:两个for循环遍历即可
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        for(int i = 0;i < n;++i){
+            for(int j = i+1;j < n;++j){
+                if(nums[i] + nums[j] == target){
+                    int[] result = {i,j};
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+}
+
+还可以用hashmap的方法实现更低的时间复杂度(leetcode官方代码)
+两遍哈希表
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        map.put(nums[i], i);
+    }
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement) && map.get(complement) != i) {
+            return new int[] { i, map.get(complement) };
+        }
+    }
+    throw new IllegalArgumentException("No two sum solution");
+}
+
+一遍哈希表
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement)) {
+            return new int[] { map.get(complement), i };
+        }
+        //坑在这:这一行不能放到for循环下的第一句，否则当target为数组第一个元素的两倍时会出错，比如:
+        //[3,2,4]
+        //6
+        //输出：[0,0]
+        //预期：[1,2]
+        map.put(nums[i], i);
+    }
+    throw new IllegalArgumentException("No two sum solution");
+}
