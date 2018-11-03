@@ -1,0 +1,93 @@
+给定两个非空链表来表示两个非负整数。位数按照逆序方式存储，它们的每个节点只存储单个数字。将两数相加返回一个新的链表。
+你可以假设除了数字 0 之外，这两个数字都不会以零开头。
+
+示例：
+输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+输出：7 -> 0 -> 8
+原因：342 + 465 = 807
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+ 
+ 核心思路：用l1作为新链表，不断循环判断，注意有很多的边界判断(时间换了空间)
+class Solution {
+    public ListNode addTwoNumbers(ListNode myl1, ListNode myl2) {
+        ListNode l1 = myl1;
+        ListNode l2 = myl2;
+        while(l1 != null || l2 != null){
+            //如果l2为空了，就循环判断剩下的l1
+            if(l2 == null){
+                //[9,9] [9]
+                //[8,10]
+                //[8,0,1]
+                while(l1.val >= 10){
+                    if(l1.next == null){
+                        ListNode l1Next2 = new ListNode(1);
+                        l1.next = l1Next2;
+                        l1.val = l1.val - 10;
+                        return myl1;
+                    }
+                    l1.val = l1.val - 10;
+                    l1.next.val += 1;
+                    l1 = l1.next;
+                }
+                return myl1;
+            }
+            l1.val = l1.val + l2.val;//核心操作代码
+            //如果相加大于10了，将当前l1的值减10后保存
+            //其下一节点判断是否为null，为null则new一个值为1的节点，不为null则值加1
+            if(l1.val >= 10){
+                l1.val = l1.val - 10;
+                //[5] [5]
+                if(l1.next == null){
+                    ListNode l1Next = new ListNode(1);
+                    l1.next = l1Next;
+                }else{
+                    l1.next.val += 1;
+                }
+            }
+            //如果l1的next为空，而l2的next不为空，需要将l2接到l1后面来，直接返回即可
+            if(l1.next == null && l2.next != null){
+                l1.next = l2.next;
+                return myl1;
+            }
+            //循环遍历
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        return myl1;
+    }
+}
+
+leetcode官方:(空间换了时间)
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0);//新链表的头结点
+        ListNode p1 = l1;
+        ListNode p2 = l2;
+        ListNode currentNode = head;//当前结点
+        int carry = 0;//进位
+        while (p1 != null || p2 != null) {
+            int val1 = (p1 != null) ? p1.val : 0;
+            int val2 = (p2 != null) ? p2.val : 0;
+            int sum = carry + val1 + val2;//进位值+p1.val+p2.val
+            carry = sum / 10;//更新进位的值
+            //添加新结点
+            currentNode.next = new ListNode(sum % 10);
+            currentNode = currentNode.next;
+            if (p1 != null) p1 = p1.next;
+            if (p2 != null) p2 = p2.next;
+        }
+        //如果进位不为0，说明还有一个结点
+        if (carry > 0) {
+            currentNode.next = new ListNode(carry);
+        }
+        return head.next;
+    }
+}
