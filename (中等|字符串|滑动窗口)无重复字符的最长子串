@@ -41,8 +41,8 @@ class Solution {
         return true;
     }
 }
-2.
-public class Solution {
+2.滑动窗口
+class Solution {
     public int lengthOfLongestSubstring(String s) {
         int n = s.length();
         Set<Character> set = new HashSet<>();
@@ -54,6 +54,7 @@ public class Solution {
                 ans = Math.max(ans, j - i);
             }
             else {
+                //类似遍历i，不过是先遍历j，通过筛选后才遍历i
                 set.remove(s.charAt(i++));
             }
         }
