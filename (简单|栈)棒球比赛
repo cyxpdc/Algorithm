@@ -35,7 +35,7 @@
 输入列表的大小将介于1和1000之间。
 列表中的每个整数都将介于-30000和30000之间。
 
-思路：用栈即可解决
+思路：用栈即可解决，因为最多只涉及到倒数二轮的操作。
 class Solution {
     public int calPoints(String[] ops) {
         int sum = 0;
