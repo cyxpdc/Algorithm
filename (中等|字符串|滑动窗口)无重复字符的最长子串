@@ -1,7 +1,5 @@
 ###给定一个字符串，找出不含有重复字符的最长子串的长度。
-```
-public static  
-```
+
 示例 1:
 输入: "abcabcbb"
 输出: 3 
@@ -44,7 +42,6 @@ class Solution {
     }
 }
 2.滑动窗口
-```
 class Solution {
     public int lengthOfLongestSubstring(String s) {
         int n = s.length();
@@ -64,7 +61,6 @@ class Solution {
         return ans;
     }
 }
-```
 3.
 public class Solution {
     public int lengthOfLongestSubstring(String s) {
