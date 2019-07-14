@@ -1,0 +1,85 @@
+给定一个非空二叉树, 返回一个由每层节点平均值组成的数组.
+
+- 示例 1:
+
+输入:
+
+    3
+    
+   / \
+   
+  9  20
+  
+    /  \
+   15   7
+   
+输出: [3, 14.5, 11]
+
+解释:
+
+第0层的平均值是 3,  第1层是 14.5, 第2层是 11. 因此返回 [3, 14.5, 11].
+
+注意：
+
+节点值的范围在32位有符号整数范围内。
+>使用层次遍历
+```java
+public class Solution {
+    public List < Double > averageOfLevels(TreeNode root) {
+        List<Double> res = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            long sum = 0, count = 0;
+            Queue<TreeNode> temp = new LinkedList<>();
+            //对当前层进行操作
+            while (!queue.isEmpty()) {
+                TreeNode n = queue.remove();
+                sum += n.val;
+                count++;
+                if (n.left != null)
+                    temp.add(n.left);
+                if (n.right != null)
+                    temp.add(n.right);
+            }
+            queue = temp;
+            res.add(sum * 1.0 / count);
+        }
+        return res;
+    }
+}
+```
+>https://leetcode.com/problems/average-of-levels-in-binary-tree/solution/
+```java
+public class Solution {
+    
+    public List < Double > averageOfLevels(TreeNode root) {
+        //每一层找到的节点总数，根为第0层
+        List <Integer> count = new ArrayList<>();
+        //每一层节点的总和
+        List <Double> res = new ArrayList<>();
+        average(root, 0, res, count);
+        for (int i = 0; i < res.size(); i++)
+            res.set(i, res.get(i) / count.get(i));
+        return res;
+    }
+    //level作为索引，sum作为各层节点和的列表
+    private void average(TreeNode node, int level, List<Double> sum, List<Integer> count) {
+        if (node == null) return;
+        //对于每个元素：
+        //如果每层都只有一个元素，那么level会一直等于sum.size，直接走else
+        //如果不止，那么if会成立，通过if修改每层相应的sum和count即可
+        if (level < sum.size()) {
+            sum.set(level, sum.get(level) + node.val);
+            count.set(level, count.get(level) + 1);
+        } 
+        else {
+            sum.add(1.0 * node.val);
+            count.add(1);
+        }
+        
+        average(node.left, level + 1, sum, count);
+        average(node.right, level + 1, sum, count);
+    }
+}
+```
