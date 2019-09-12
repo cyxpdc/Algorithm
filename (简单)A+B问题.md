@@ -1,3 +1,4 @@
+```C++
 class Solution { 
     /* 来源:九章算法
      * param a: The first integer
@@ -24,3 +25,4 @@ class Solution {
         return a;
     }
 };
+```
