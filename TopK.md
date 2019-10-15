@@ -90,7 +90,7 @@ public class BFPRT {
         }
     }
 
-    // O(N) BFPRT
+    // O(N) BFTER
     public static int[] getMinKNumsByBFPRT(int[] arr, int k) {
         if (k < 1 || k > arr.length) {
             return arr;
@@ -108,12 +108,7 @@ public class BFPRT {
         }
         return res;
     }
-
-    public static int getMinKthByBFPRT(int[] arr, int K) {
-        int[] copyArr = copyArray(arr);
-        return bfprt(copyArr, 0, copyArr.length - 1, K - 1);
-    }
-
+    
     public static int[] copyArray(int[] arr) {
         int[] res = new int[arr.length];
         for (int i = 0; i != res.length; i++) {
@@ -122,12 +117,17 @@ public class BFPRT {
         return res;
     }
 
+    public static int getMinKthByBFPRT(int[] arr, int K) {
+        int[] copyArr = copyArray(arr);
+        return bfprt(copyArr, 0, copyArr.length - 1, K - 1);
+    }
+
     public static int bfprt(int[] arr, int begin, int end, int i) {
         if (begin == end) {
             return arr[begin];
         }
-        int pivot = medianOfMedians(arr, begin, end);
-        int[] pivotRange = partition(arr, begin, end, pivot);
+        int pivot = medianOfMedians(arr, begin, end);//找到本次的划分值
+        int[] pivotRange = partition(arr, begin, end, pivot);//通过荷兰国旗算法得到“等于”区域的左右边界的索引
         if (i >= pivotRange[0] && i <= pivotRange[1]) {
             return arr[i];
         } else if (i < pivotRange[0]) {
@@ -146,6 +146,7 @@ public class BFPRT {
             int endI = beginI + 4;
             mArr[i] = getMedian(arr, beginI, Math.min(end, endI));
         }
+        //return getMedian(mArr,0,mArr.length - 1);//也可以
         return bfprt(mArr, 0, mArr.length - 1, mArr.length / 2);//找中位数中的中位数
     }
     //划分后，返回中间区域的左右两个下标
@@ -167,14 +168,14 @@ public class BFPRT {
         range[1] = big - 1;
         return range;
     }
-    //5个数字排序
+    //数组排序后返回中位数
     public static int getMedian(int[] arr, int begin, int end) {
         insertionSort(arr, begin, end);
         int sum = end + begin;
         int mid = (sum / 2) + (sum % 2);
         return arr[mid];
     }
-
+    //插入排序，数据量少可以使用，因为常数量低
     public static void insertionSort(int[] arr, int begin, int end) {
         for (int i = begin + 1; i != end + 1; i++) {
             for (int j = i; j != begin; j--) {
