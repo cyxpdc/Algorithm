@@ -1,8 +1,27 @@
 两个map加一个链表
+
+- set：
+
+先判断有没有这个key（用map能O（1），即key2Node）
+
+如果没有，就新加到1下，没1就new1；
+
+如果有，改变key对应的value，（同下）然后先判断在哪个次数下(times)，然后拿出这个key（调整这个次数下的其他节点，如果没有，删掉次数节点），判断次数加1的节点是否存在，若存在，直接挂尾，若不存在，new后再挂（可能需要调整，因为可能为2，且有1有3，需要插入中间）（用heads这个map来映射节点和链表）
+
+如果超了，删除最小次数节点下面的头节点，如果只有一个次数节点，也是删头
+
+- get：
+
+先判断有没有这个key（用map能O（1），即key2Node）
+
+如果没有，就返回空；
+
+如果有，返回key，（同上）然后先判断在哪个次数下(times），然后拿出这个key（调整这个次数下的其他节点，如果没有，删掉次数节点），判断次数加1的节点是否存在，若存在，直接挂尾，若不存在，new后再挂（可能需要调整，因为可能为2，且有1有3，需要插入中间）
+
 ```java
 public class LFU {
     //挂在次数节点下面的链表节点
-    public static class Node {
+    private static class Node {
         public Integer key;
         public Integer value;
         public Integer times;//其次数节点的次数，用来表示次数节点，节约了空间
@@ -16,7 +35,7 @@ public class LFU {
         }
     }
 
-    public static class LFUCache {
+    private static class LFUCache {
         //加上次数节点的整个竖向链表（次数节点是虚拟的，用Node里面的times来表示，可以节省次数节点的空间）
         public static class NodeList {
             public Node head;//挂在次数节点下面的链表头
@@ -28,7 +47,7 @@ public class LFU {
                 head = node;
                 tail = node;
             }
-            //这里是头部优先级高，跟笔记相反，都行
+            //头部优先级高，尾部优先删除
             public void addNodeFromHead(Node newHead) {
                 newHead.down = head;
                 head.up = newHead;
@@ -64,17 +83,17 @@ public class LFU {
         private int capacity;//总容量
         private int size;//当前key数量
         //key-Node（Node里面也有key），方便查找得到Node
-        private HashMap<Integer, Node> records;
-        //节点属于哪个NodeList，，方便查找得到NodeList，用来处理set时节点更换次数节点
-        private HashMap<Node, NodeList> heads;
+        private Map<Integer, Node> key2Node;
+        //节点属于哪个NodeList，方便查找得到NodeList，用来处理set时节点更换次数节点
+        private Map<Node, NodeList> node2List;
         //整体链表的头链表，因为删除的时候，是要删除最小次数节点的尾，所以记录头链表方便查找
         private NodeList headList;
         //构造方法
         public LFUCache(int capacity) {
             this.capacity = capacity;
             this.size = 0;
-            this.records = new HashMap<>();
-            this.heads = new HashMap<>();
+            this.key2Node = new HashMap<>();
+            this.node2List = new HashMap<>();
             headList = null;
         }
         //先判断有没有这个key，如果没有，就新加到1下，没1就new1；
@@ -84,11 +103,11 @@ public class LFU {
         //如果超了，删除最小次数节点下面的头节点，如果只有一个次数节点，也是删头
         public void set(int key, int value) {
             //如果key存在
-            if (records.containsKey(key)) {
-                Node node = records.get(key);
+            if (key2Node.containsKey(key)) {
+                Node node = key2Node.get(key);
                 node.value = value;
                 node.times++;
-                NodeList curNodeList = heads.get(node);
+                NodeList curNodeList = node2List.get(node);
                 move(node, curNodeList);
             } else {//如果key不存在
                 if (size == capacity) {//达到容量了，删掉头链表的尾
@@ -96,9 +115,9 @@ public class LFU {
                     Node node = headList.tail;
                     headList.deleteNode(node);
                     //如果删掉节点后，如果当前次数节点没有下挂节点了，需要删掉
-                    modifyHeadList(headList);
-                    records.remove(node.key);
-                    heads.remove(node);
+                    modifyNodeList(headList);
+                    key2Node.remove(node.key);
+                    node2List.remove(node);
                     size--;
                 }
                 Node newNode = new Node(key, value, 1);
@@ -116,8 +135,8 @@ public class LFU {
                         headList = newList;
                     }
                 }
-                records.put(key, newNode);
-                heads.put(newNode, headList);
+                key2Node.put(key, newNode);
+                node2List.put(newNode, headList);
                 size++;
             }
         }
@@ -126,7 +145,7 @@ public class LFU {
             oldNodeList.deleteNode(node);
             //如果老链表被删掉了，则需要连接其前后，所以得到它前面的链表，如果老链表是头链表，则pre为null
             //如果没被删掉，则连接的就是其本身和后链表
-            NodeList preList = modifyHeadList(oldNodeList) ? oldNodeList.last
+            NodeList preList = modifyNodeList(oldNodeList) ? oldNodeList.last
                     : oldNodeList;
             NodeList nextList = oldNodeList.next;
             //如果老链表的next为空，new一个出来后，节点挂在这下面
@@ -139,14 +158,14 @@ public class LFU {
                 if (headList == null) {//如果此时头链表为null，即整体链表只有new，就指向new
                     headList = newList;
                 }
-                heads.put(node, newList);
+                node2List.put(node, newList);
             } 
             //如果老链表的next不为空，判断次数是否与这个next相同
             else {
                 //相同直接挂上去
                 if (nextList.head.times.equals(node.times)) {
                     nextList.addNodeFromHead(node);
-                    heads.put(node, nextList);
+                    node2List.put(node, nextList);
                 } 
                 //不同则new一个出来挂上去，连接好pre和new和next
                 else {
@@ -163,12 +182,12 @@ public class LFU {
                     if (headList == nextList) {
                         headList = newList;
                     }
-                    heads.put(node, newList);
+                    node2List.put(node, newList);
                 }
             }
         }
         //删除一个节点后，判断这个list是否要删掉
-        private boolean modifyHeadList(NodeList nodeList) {
+        private boolean modifyNodeList(NodeList nodeList) {
             if (nodeList.isEmpty()) {
                 //如果是头链表
                 if (headList == nodeList) {
@@ -190,12 +209,12 @@ public class LFU {
         }
 
         public int get(int key) {
-            if (!records.containsKey(key)) {
+            if (!key2Node.containsKey(key)) {
                 throw new RuntimeException("不存在这个节点");
             }
-            Node node = records.get(key);
+            Node node = key2Node.get(key);
             node.times++;
-            NodeList curNodeList = heads.get(node);
+            NodeList curNodeList = node2List.get(node);
             move(node, curNodeList);//调整节点所在的次数节点
             return node.value;
         }
