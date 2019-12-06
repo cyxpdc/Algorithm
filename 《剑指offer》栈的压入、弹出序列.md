@@ -29,9 +29,8 @@ public class Solution {
     }
 }
 ```
-大佬的代码就是短
+大佬的代码就是短：https://www.nowcoder.com/questionTerminal/d77d11405cc7470d82554cb392585106?answerType=1&f=discussion
 ```java
-链接：https://www.nowcoder.com/questionTerminal/d77d11405cc7470d82554cb392585106?answerType=1&f=discussion
 import java.util.Stack;
 public class Solution {
     public boolean IsPopOrder(int [] pushA,int [] popA) {
